@@ -1,0 +1,28 @@
+{
+  "workers": [
+    {
+      "id": "9503",
+      "name": "Сергей",
+      "surname": "Сергеев",
+      "departament": "-",
+      "gender": "Мужской",
+      "phoneNumber": "12345678456",
+      "mail": "ывпавпав@mail.ru"
+    },
+    {
+      "id": "5650",
+      "name": "Анна",
+      "surname": "Сергеевна",
+      "departament": "-",
+      "gender": "Женский",
+      "phoneNumber": "1234567835678",
+      "mail": "Анна@mail.ru"
+    }
+  ],
+  "departaments": [
+    {
+      "id": "7721",
+      "departamentName": "Фронт"
+    }
+  ]
+}

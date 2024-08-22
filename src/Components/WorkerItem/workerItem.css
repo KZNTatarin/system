@@ -1,0 +1,14 @@
+.worker__item-header {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.worker__item-top {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.worker-avatar {
+    width: 200px;
+    height: 200px;
+}

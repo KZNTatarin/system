@@ -1,28 +1,36 @@
 {
   "workers": [
     {
-      "id": "9503",
-      "name": "Сергей",
-      "surname": "Сергеев",
+      "id": "4236",
+      "name": "Дмитрий",
+      "surname": "Макаров",
       "departament": "-",
       "gender": "Мужской",
-      "phoneNumber": "12345678456",
-      "mail": "ывпавпав@mail.ru"
+      "phoneNumber": "7654321",
+      "mail": "dmitry2@mail.ru"
     },
     {
-      "id": "5650",
-      "name": "Анна",
+      "id": "4465",
+      "name": "Алина",
       "surname": "Сергеевна",
-      "departament": "-",
+      "departament": "Дизайнеры",
       "gender": "Женский",
-      "phoneNumber": "1234567835678",
-      "mail": "Анна@mail.ru"
+      "phoneNumber": "1234567",
+      "mail": "alina@mail.ru"
     }
   ],
   "departaments": [
     {
-      "id": "7721",
-      "departamentName": "Фронт"
+      "id": "cec0",
+      "departamentName": "Дизайнеры"
+    },
+    {
+      "id": "4138",
+      "departamentName": "Дизайнеры"
+    },
+    {
+      "id": "de9f",
+      "departamentName": "Фулл-стак"
     }
   ]
 }

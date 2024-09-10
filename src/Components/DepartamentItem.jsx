@@ -14,11 +14,11 @@ const DepartamentItem = ({ departament }) => {
   const [updateModal, setUpdateModal] = useState(false);
 
   const showUpdateModal = () => {
-    setUpdateModal(true);
+    setUpdateModal(!updateModal);
   };
 
   const cancleUpdateModal = () => {
-    setUpdateModal(false);
+    setUpdateModal(!updateModal);
   };
 
   const [ deleteModal, setDeleteModal] = useState(false);

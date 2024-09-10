@@ -4,7 +4,9 @@ button {
     font: inherit;
     color: inherit;
     background-color: transparent;
-    /* отображаем курсор в виде руки при наведении; некоторые
-    считают, что необходимо оставлять стрелочный вид для кнопок */
     cursor: pointer;
+  }
+
+  .ant-modal-mask {
+    background-color: rgba(0, 0, 0, 0.1);
   }

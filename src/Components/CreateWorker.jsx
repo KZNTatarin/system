@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Button, InputNumber, Modal, Dropdown, Menu, Radio } from "antd";
+import { Button, InputNumber, Modal, Dropdown, Menu, Radio, message } from "antd";
 import Input from "antd/es/input/Input";
 import axios from "axios";
 
-const createWorker = () => {
+const createWorker = ({ onAddWorker }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [departaments, setDepartaments] = useState([]);
 
@@ -53,11 +53,15 @@ const createWorker = () => {
     setWorkerDepartament(selectedDept.label);
   };
 
+  // ЧТО БЫ ФАМИЛИЯ И ИМЯ БЫЛИ ЗАГЛАВНЫМИ
+  const capitalizedWorkerName = workerName.charAt(0).toUpperCase() + workerName.slice(1);
+  const capitalizedWorkerSurName = workerSurName.charAt(0).toUpperCase() + workerSurName.slice(1);
+
   // ДАННЫЕ ДЛЯ ОТПРАВКИ
   const dataToSend = {
     id: (Math.random() * 10000).toFixed(0),
-    name: workerName,
-    surname: workerSurName,
+    name: capitalizedWorkerName.trim(),
+    surname: capitalizedWorkerSurName.trim(),
     departament: workerDepartament,
     gender: genderValue,
     phoneNumber: workerPhoneNumber,
@@ -67,30 +71,38 @@ const createWorker = () => {
   // ОТПРАВКА ДАННЫХ
   const sendNewWorker = async () => {
     try {
-      await axios.post("http://localhost:3000/workers", dataToSend);
-      console.log(dataToSend);
-      
+      await axios.post("http://localhost:3000/workers", dataToSend);      
       setIsModalOpen(false);
-
+      onAddWorker(dataToSend)
     } catch (error) {
       console.log(error);
     }
   };
 
+  // СООБЩЕНИЕ С ОШИБКОЙ ОТПРАВКИ ДАННЫХ 
+  const [messageApi, contextHolder] = message.useMessage();
+  const error = () => {
+    messageApi.open({
+      type: 'error',
+      content: 'Заполните обязательные поля!',
+    });
+  };
+
   return (
     <div>
+      {contextHolder}
       <Button style={{ margin: "20px 0" }} onClick={showModal}>
         Добавить сотрудника
       </Button>
       <Modal
         title="Новый сотрудник"
         open={isModalOpen}
-        onOk={handleOk}
+        onOk={workerName.trim() === '' || workerSurName.trim() === ''  ? error : handleOk}
         onCancel={handleCancel}
       >
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div style={{ width: "50%", margin: "0 5px" }}>
-            <p>Имя</p>
+            <p>Имя*</p>
             <Input
               value={workerName}
               onChange={(e) => setWorkerName(e.target.value)}
@@ -98,7 +110,7 @@ const createWorker = () => {
           </div>
 
           <div style={{ width: "50%", margin: "0 5px" }}>
-            <p>Фамиллия</p>
+            <p>Фамиллия*</p>
             <Input
               value={workerSurName}
               onChange={(e) => setWorkerSurName(e.target.value)}

@@ -1,10 +1,12 @@
 import React from 'react';
+import { Typography } from 'antd';
+
+const { Title } = Typography;
 
 const Main = () => {
     return (
-        <div>
-            Название: "ООО"
-            Количество работников: 0
+        <div style={{textAlign: 'center'}}>
+           <Title  level={2}>Приветствую. Это главная страница!</Title>
         </div>
     );
 };

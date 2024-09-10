@@ -8,7 +8,7 @@ const { Text } = Typography;
 
 import { ArrowLeftOutlined } from "@ant-design/icons";
 
-import './workerItem.css';
+import "./workerItem.css";
 import avatar from "../../img/avatar.png";
 import Card from "antd/es/card/Card";
 
@@ -21,7 +21,12 @@ const WorkerItem = () => {
   const [departaments, setDepartaments] = useState([]);
   const navigate = useNavigate();
 
-// ПОЛУЧЕНИЕ СОТРУДНИКА ПО ID
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const [modalType, setModalType] = useState("update");
+
+  // ПОЛУЧЕНИЕ СОТРУДНИКА ПО ID
   useEffect(() => {
     axios
       .get(`http://localhost:3000/workers/${slug}`)
@@ -34,7 +39,7 @@ const WorkerItem = () => {
       });
   }, [slug]);
 
-// ПОЛУЧЕНИЕ ВСЕХ ДЕПАРТАМЕНТОВ
+  // ПОЛУЧЕНИЕ ВСЕХ ДЕПАРТАМЕНТОВ
   useEffect(() => {
     axios
       .get(`http://localhost:3000/departaments`)
@@ -46,18 +51,40 @@ const WorkerItem = () => {
       });
   }, [slug]);
 
-// МОДАЛКА РЕДАКТОР РАБОТНИКА
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const showModal = () => {
-    setIsModalOpen(true);
+  // МОДАЛКА РЕДАКТОР РАБОТНИКА 
+  const showUpdateModal = () => {
+    setModalType("update");
+    setIsUpdateModalOpen(true);
   };
-  const handleOk = () => {
-    workerNewData()
-    setIsModalOpen(false);
+  const handleUpdateOk = () => {
+    workerNewData();
+    setIsUpdateModalOpen(false);
     navigate(0);
   };
-  const handleCancel = () => {
-    setIsModalOpen(false);
+
+  const handleUpdateCancel = () => {
+    setIsUpdateModalOpen(false);
+  };
+
+  //МОДАЛКА УДАЛЕНИЯ
+  const showDeleteModal = () => {
+    setModalType("delete");
+    setIsDeleteModalOpen(true);
+  };
+  const handleDeleteOk = () => {
+    axios
+      .delete(`http://localhost:3000/workers/${worker?.id}`)
+      .then(() => {
+        setIsDeleteModalOpen(false);
+        navigate(-1); 
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const handleDeleteCancel = () => {
+    setIsDeleteModalOpen(false);
   };
 
   useEffect(() => {
@@ -72,13 +99,13 @@ const WorkerItem = () => {
     label: dept.departamentName,
   }));
 
-
   const handleMenuClick = (e) => {
     const selectedDept = menuItems.find((item) => item.key === e.key);
     setNewDepartament(selectedDept.label);
     console.log(newDepartament);
   };
 
+  // ДАННЫЕ ДЛЯ ОТПРАВКИ
   const workerNewData = () => {
     axios.put(`http://localhost:3000/workers/${slug}`, {
       id: worker.id,
@@ -95,7 +122,7 @@ const WorkerItem = () => {
   return (
     <div>
       <div className="worker__item-header">
-        <Button style={{marginRight: '30px'}} onClick={() => navigate(-1)}>
+        <Button style={{ marginRight: "30px" }} onClick={() => navigate(-1)}>
           <ArrowLeftOutlined />
         </Button>
         <h1 style={{ display: "inline" }}>
@@ -109,17 +136,29 @@ const WorkerItem = () => {
 
         <Card
           title="Персональные данные"
-          extra={<Button onClick={showModal}>Редактировать</Button>}
+          extra={
+            <>
+              <Button
+                style={{ marginRight: "20px" }}
+                onClick={showUpdateModal}
+              >
+                Редактировать
+              </Button>
+              <Button danger type="primary" onClick={showDeleteModal}>
+                Удалить
+              </Button>
+            </>
+          }
           style={{ width: "50%" }}
         >
           <p>
             <Text strong>Отдел: </Text> {worker?.departament} <br />
           </p>
           <p>
-            <Text strong>Номер телефона: </Text> {worker?.phoneNumber}{" "}
+            <Text strong>Номер телефона: </Text> {worker?.phoneNumber}
           </p>
           <p>
-            <Text strong>Почта: </Text> {worker?.mail}{" "}
+            <Text strong>Почта: </Text> {worker?.mail}
           </p>
           <p>
             <Text strong>ID сотрудника: </Text> {worker?.id}
@@ -130,38 +169,57 @@ const WorkerItem = () => {
         </Card>
       </div>
       <div className="worker__itme-bot"></div>
+
+      {/* UPDATE MODAL */}
       <Modal
         title="Изменить данные"
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
+        open={isUpdateModalOpen}
+        onOk={handleUpdateOk}
+        onCancel={handleUpdateCancel}
       >
-        <p>
-          Отдел: <br/>
-          <Dropdown
-            overlay={
-              <Menu items={menuItems} selectable onClick={handleMenuClick} />
-            }
-            trigger={["click"]}
-          >
-            <Button onClick={(e) => e.preventDefault()}>
-              {newDepartament === undefined ? worker?.departament : newDepartament}
-            </Button>
-          </Dropdown>
-        </p>
+        <>
+          <p>
+            Отдел: <br />
+            <Dropdown
+              overlay={
+                <Menu items={menuItems} selectable onClick={handleMenuClick} />
+              }
+              trigger={["click"]}
+            >
+              <Button onClick={(e) => e.preventDefault()}>
+                {newDepartament === undefined
+                  ? worker?.departament
+                  : newDepartament}
+              </Button>
+            </Dropdown>
+          </p>
 
-        <p>
-          Номер телефона:
-          <Input
-            value={newNumber}
-            onChange={(e) => setNewNumber(e.target.value)}
-          />
-        </p>
+          <p>
+            Номер телефона:
+            <Input
+              value={newNumber}
+              onChange={(e) => setNewNumber(e.target.value)}
+            />
+          </p>
 
-        <p>
-          Почта:
-          <Input value={newMail} onChange={(e) => setNewMail(e.target.value)} />
-        </p>
+          <p>
+            Почта:
+            <Input
+              value={newMail}
+              onChange={(e) => setNewMail(e.target.value)}
+            />
+          </p>
+        </>
+      </Modal>
+
+      {/* DELETE MODAL */}
+      <Modal
+        title="Удалить сотрудника"
+        open={isDeleteModalOpen}
+        onOk={handleDeleteOk}
+        onCancel={handleDeleteCancel}
+      >
+        <p>Вы уверены, что хотите удалить этого сотрудника?</p>
       </Modal>
     </div>
   );
